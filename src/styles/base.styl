@@ -1,0 +1,50 @@
+/**
+ * HTML / BODY
+ */
+html
+body
+    // overflow-x hidden
+
+::selection {
+  background #edede8 /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background #edede8 /* Gecko Browsers */
+}
+
+html.is-scroll-disabled,
+html.is-scroll-disabled body
+    height 100%
+    width 100%
+    overflow hidden
+
+html.is-scroll-locked,
+html.is-scroll-locked body
+    overflow hidden
+
+html.is-grab,
+html.is-grab body
+    cursor grab
+
+body
+    // width 100vw
+    // overflow-x hidden
+    background $beige
+    color $black
+    font-family Arial, sans-serif
+    font-weight normal
+    font-size 16px
+
+    line-height 1.35
+    -webkit-font-smoothing antialiased
+    -moz-osx-font-smoothing grayscale
+
+.app
+	z-index 3
+	opacity 0
+	overflow-x hidden
+	width 100vw
+	height 100vh
+	position fixed
+	top 0
+	left 0
