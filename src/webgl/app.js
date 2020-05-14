@@ -6,7 +6,7 @@ import SceneObj from './core/Scene.js'
 
 import Config from './config/index.js'
 
-import Plane from './meshes/Plane.js'
+import Grid from './meshes/Grid.js'
 
 class App {
   constructor (container) {
@@ -20,14 +20,14 @@ class App {
     this.DELTA_TIME = 0
     this.LAST_TIME = Date.now()
 
-    // this.initMeshes()
+    this.initMeshes()
     this.initLights()
     this.addListeners()
   }
 
   initMeshes () {
-	this.plane = new Plane()
-	this.scene.add(this.plane)
+	this.grid = new Grid()
+	this.scene.add(this.grid)
   }
 
   initLights () {

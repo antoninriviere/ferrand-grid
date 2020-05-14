@@ -3,12 +3,12 @@ import { Object3D, TextureLoader, Vector2, PlaneBufferGeometry, MeshBasicMateria
 import getAbsoluteBoundingRect from '../../utils/getAbsoluteBoundingRect.js'
 
 class Plane extends Object3D {
-	constructor()
+	constructor(options)
 	{
 		super()
 
-		this.$image = document.querySelector('.grid__img__1')
-		this.$image.style.opacity = 0
+		this.$image = document.querySelector(options.selector)
+		this.$image.style.opacity = 0.1
 
 		this.loader = new TextureLoader()
 
@@ -27,8 +27,15 @@ class Plane extends Object3D {
 		const imgBounds = getAbsoluteBoundingRect(this.$image)
 
 		this.sizes.set(imgBounds.width, imgBounds.height)
+
+		const originX = -window.innerWidth / 2 + imgBounds.width / 2
+		const originY = window.innerHeight / 2 - imgBounds.height / 2
+
+		const posX = originX + imgBounds.left
+		const posY = originY - imgBounds.top
+
 		this.positions.set(
-			0, 0
+			posX, posY
 		)
 	}
 
@@ -41,8 +48,8 @@ class Plane extends Object3D {
 
 		this.mesh = new Mesh(this.geometry, this.material)
 
-		this.mesh.position.set(this.positions.x, this.positions.y, 0)
-		this.mesh.scale.set(this.sizes.x, this.sizes.y, 1)
+		this.position.set(this.positions.x, this.positions.y, 0)
+		this.scale.set(this.sizes.x, this.sizes.y, 1)
 
 		this.add(this.mesh)
 	}

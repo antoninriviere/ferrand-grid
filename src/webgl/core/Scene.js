@@ -21,7 +21,7 @@ class SceneObj extends Scene {
         alpha: true
       },
       debug: {
-        stats: false,
+        stats: true,
         orbitControls: false
       },
       postProcessing: {

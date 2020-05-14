@@ -50412,7 +50412,7 @@ function (_Scene) {
         alpha: true
       },
       debug: {
-        stats: false,
+        stats: true,
         orbitControls: false
       },
       postProcessing: {
@@ -50622,14 +50622,14 @@ var Plane =
 function (_Object3D) {
   _inherits(Plane, _Object3D);
 
-  function Plane() {
+  function Plane(options) {
     var _this;
 
     _classCallCheck(this, Plane);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Plane).call(this));
-    _this.$image = document.querySelector('.grid__img__1');
-    _this.$image.style.opacity = 0;
+    _this.$image = document.querySelector(options.selector);
+    _this.$image.style.opacity = 0.1;
     _this.loader = new _three.TextureLoader();
     _this.image = _this.loader.load(_this.$image.src);
     _this.sizes = new _three.Vector2();
@@ -50647,7 +50647,11 @@ function (_Object3D) {
     value: function getSizes() {
       var imgBounds = (0, _getAbsoluteBoundingRect.default)(this.$image);
       this.sizes.set(imgBounds.width, imgBounds.height);
-      this.positions.set(0, 0);
+      var originX = -window.innerWidth / 2 + imgBounds.width / 2;
+      var originY = window.innerHeight / 2 - imgBounds.height / 2;
+      var posX = originX + imgBounds.left;
+      var posY = originY - imgBounds.top;
+      this.positions.set(posX, posY);
     }
   }, {
     key: "createMesh",
@@ -50657,8 +50661,8 @@ function (_Object3D) {
         map: this.image
       });
       this.mesh = new _three.Mesh(this.geometry, this.material);
-      this.mesh.position.set(this.positions.x, this.positions.y, 0);
-      this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
+      this.position.set(this.positions.x, this.positions.y, 0);
+      this.scale.set(this.sizes.x, this.sizes.y, 1);
       this.add(this.mesh);
     }
   }]);
@@ -50668,7 +50672,83 @@ function (_Object3D) {
 
 var _default = Plane;
 exports.default = _default;
-},{"three":"node_modules/three/build/three.module.js","../../utils/getAbsoluteBoundingRect.js":"src/utils/getAbsoluteBoundingRect.js"}],"src/webgl/app.js":[function(require,module,exports) {
+},{"three":"node_modules/three/build/three.module.js","../../utils/getAbsoluteBoundingRect.js":"src/utils/getAbsoluteBoundingRect.js"}],"src/webgl/meshes/Grid.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _three = require("three");
+
+var _Plane = _interopRequireDefault(require("./Plane.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Grid =
+/*#__PURE__*/
+function (_Object3D) {
+  _inherits(Grid, _Object3D);
+
+  function Grid() {
+    var _this;
+
+    _classCallCheck(this, Grid);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Grid).call(this));
+
+    _this.initPlanes();
+
+    return _this;
+  }
+  /**
+   * 
+   * Init planes with images
+   */
+
+
+  _createClass(Grid, [{
+    key: "initPlanes",
+    value: function initPlanes() {
+      this.planes = [];
+      var gridImages = document.querySelectorAll('.grid__img');
+
+      for (var i = 1; i <= gridImages.length; i++) {
+        var opt = {
+          selector: ".grid__img__".concat(i)
+        };
+        var plane = new _Plane.default(opt);
+        this.add(plane);
+        this.planes.push(plane);
+      }
+    }
+  }]);
+
+  return Grid;
+}(_three.Object3D);
+
+var _default = Grid;
+exports.default = _default;
+},{"three":"node_modules/three/build/three.module.js","./Plane.js":"src/webgl/meshes/Plane.js"}],"src/webgl/app.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50684,7 +50764,7 @@ var _Scene = _interopRequireDefault(require("./core/Scene.js"));
 
 var _index = _interopRequireDefault(require("./config/index.js"));
 
-var _Plane = _interopRequireDefault(require("./meshes/Plane.js"));
+var _Grid = _interopRequireDefault(require("./meshes/Grid.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50711,8 +50791,8 @@ function () {
     }, _index.default));
     this.container = container;
     this.DELTA_TIME = 0;
-    this.LAST_TIME = Date.now(); // this.initMeshes()
-
+    this.LAST_TIME = Date.now();
+    this.initMeshes();
     this.initLights();
     this.addListeners();
   }
@@ -50720,8 +50800,8 @@ function () {
   _createClass(App, [{
     key: "initMeshes",
     value: function initMeshes() {
-      this.plane = new _Plane.default();
-      this.scene.add(this.plane);
+      this.grid = new _Grid.default();
+      this.scene.add(this.grid);
     }
   }, {
     key: "initLights",
@@ -50758,7 +50838,7 @@ function () {
 
 var _default = App;
 exports.default = _default;
-},{"gsap":"node_modules/gsap/index.js","three":"node_modules/three/build/three.module.js","./core/Scene.js":"src/webgl/core/Scene.js","./config/index.js":"src/webgl/config/index.js","./meshes/Plane.js":"src/webgl/meshes/Plane.js"}],"src/index.js":[function(require,module,exports) {
+},{"gsap":"node_modules/gsap/index.js","three":"node_modules/three/build/three.module.js","./core/Scene.js":"src/webgl/core/Scene.js","./config/index.js":"src/webgl/config/index.js","./meshes/Grid.js":"src/webgl/meshes/Grid.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 var _app = _interopRequireDefault(require("./webgl/app.js"));
@@ -50803,7 +50883,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64122" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60097" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
