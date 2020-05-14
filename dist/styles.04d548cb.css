@@ -230,6 +230,9 @@ html.is-grab,
 html.is-grab body {
   cursor: grab;
 }
+#controlKit .panel {
+  z-index: 9 !important;
+}
 body {
   background: #edede8;
   color: #000025;

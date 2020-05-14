@@ -1,5 +1,7 @@
 import { Object3D } from 'three'
 
+import GUI from '../utils/GUI.js'
+
 import Plane from './Plane.js'
 
 class Grid extends Object3D {
@@ -8,6 +10,8 @@ class Grid extends Object3D {
 		super()
 
 		this.initPlanes()
+
+		this.initGUI()
 	}
 
 	/**
@@ -31,6 +35,19 @@ class Grid extends Object3D {
 
 			this.planes.push(plane)
 		}
+	}
+
+	/**
+	 * 
+	 * Init GUI
+	 */
+
+	initGUI()
+	{
+		this.position.range = [-100, 100]
+
+		GUI.panel
+			.addSlider(this.position, 'z', 'range')
 	}
 }
 

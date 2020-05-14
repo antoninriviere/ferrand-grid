@@ -13,7 +13,7 @@ class GUI extends ControlKit {
       position: [0, 0],
       width: 275,
       ratio: 20,
-      fixed: false,
+      fixed: true,
       ...options
     })
   }
