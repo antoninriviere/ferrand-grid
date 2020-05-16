@@ -43,7 +43,9 @@ class App {
 
   update () {
     this.DELTA_TIME = Date.now() - this.LAST_TIME
-    this.LAST_TIME = Date.now()
+	this.LAST_TIME = Date.now()
+	
+	this.grid.onTick()
 
     this.scene.render()
   }
