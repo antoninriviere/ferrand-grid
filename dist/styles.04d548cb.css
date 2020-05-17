@@ -235,7 +235,7 @@ html.is-grab body {
 }
 body {
   overflow: hidden;
-  background: #edede8;
+  background: #2f2a24;
   color: #000025;
   font-family: Arial, sans-serif;
   font-weight: normal;
@@ -260,7 +260,7 @@ body {
   top: 0;
   left: 0;
   z-index: 2;
-  background: #fff;
+  background: #2f2a24;
   opacity: 0;
 }
 .grid__img {

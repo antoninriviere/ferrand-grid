@@ -10,12 +10,17 @@ export default class DragCursor
 		const winHeight = window.innerHeight
 
 		const baseOptions = {
+			force: 1.5,
+			interpolation: 0.1,
 			direction: -1,
 			width: winWidth,
 			height: winHeight
 		}
 
 		this.options = Object.assign({}, baseOptions, options)
+
+		this.force = this.options.force
+		this.interpolation = this.options.interpolation
 
 		this.limits = {}
 
@@ -96,6 +101,21 @@ export default class DragCursor
 
 	/**
 	 * 
+	 * Setters
+	 */
+
+	setForce(newForce)
+	{
+		this.force = newForce
+	}
+
+	setInterpolation(newInterpolation)
+	{
+		this.interpolation = newInterpolation
+	}
+
+	/**
+	 * 
 	 * Events
 	 */
 
@@ -113,8 +133,8 @@ export default class DragCursor
 
 	onPan(ev)
 	{
-		let xVal = (this.drag.start.x + ev.deltaX * 1.5) * this.options.direction
-		let yVal = (this.drag.start.y + ev.deltaY * 1.5) * this.options.direction
+		let xVal = (this.drag.start.x + ev.deltaX * this.force) * this.options.direction
+		let yVal = (this.drag.start.y + ev.deltaY * this.force) * this.options.direction
 
 		xVal = MathUtils.clamp(xVal, this.limits.left, this.limits.right)
 		yVal = MathUtils.clamp(yVal, this.limits.top, this.limits.bottom)
@@ -130,10 +150,10 @@ export default class DragCursor
 
 	onTick()
 	{
-		this.drag.x = MathUtils.lerp(this.drag.x, this.drag.target.x, 0.1)
+		this.drag.x = MathUtils.lerp(this.drag.x, this.drag.target.x, this.interpolation)
 		this.drag.x = Math.round(this.drag.x * 1000) / 1000
 
-		this.drag.y = MathUtils.lerp(this.drag.y, this.drag.target.y, 0.1)
+		this.drag.y = MathUtils.lerp(this.drag.y, this.drag.target.y, this.interpolation)
 		this.drag.y = Math.round(this.drag.y * 1000) / 1000
 	}
 }

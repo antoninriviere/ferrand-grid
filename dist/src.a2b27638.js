@@ -60423,11 +60423,15 @@ function () {
     var winWidth = window.innerWidth;
     var winHeight = window.innerHeight;
     var baseOptions = {
+      force: 1.5,
+      interpolation: 0.1,
       direction: -1,
       width: winWidth,
       height: winHeight
     };
     this.options = Object.assign({}, baseOptions, options);
+    this.force = this.options.force;
+    this.interpolation = this.options.interpolation;
     this.limits = {};
     this.setLimits(this.options.width, this.options.height, winWidth, winHeight);
     this.drag = {
@@ -60505,6 +60509,21 @@ function () {
     }
     /**
      * 
+     * Setters
+     */
+
+  }, {
+    key: "setForce",
+    value: function setForce(newForce) {
+      this.force = newForce;
+    }
+  }, {
+    key: "setInterpolation",
+    value: function setInterpolation(newInterpolation) {
+      this.interpolation = newInterpolation;
+    }
+    /**
+     * 
      * Events
      */
 
@@ -60523,8 +60542,8 @@ function () {
   }, {
     key: "onPan",
     value: function onPan(ev) {
-      var xVal = (this.drag.start.x + ev.deltaX * 1.5) * this.options.direction;
-      var yVal = (this.drag.start.y + ev.deltaY * 1.5) * this.options.direction;
+      var xVal = (this.drag.start.x + ev.deltaX * this.force) * this.options.direction;
+      var yVal = (this.drag.start.y + ev.deltaY * this.force) * this.options.direction;
       xVal = _MathUtils.default.clamp(xVal, this.limits.left, this.limits.right);
       yVal = _MathUtils.default.clamp(yVal, this.limits.top, this.limits.bottom);
       this.drag.target.x = xVal;
@@ -60537,9 +60556,9 @@ function () {
   }, {
     key: "onTick",
     value: function onTick() {
-      this.drag.x = _MathUtils.default.lerp(this.drag.x, this.drag.target.x, 0.1);
+      this.drag.x = _MathUtils.default.lerp(this.drag.x, this.drag.target.x, this.interpolation);
       this.drag.x = Math.round(this.drag.x * 1000) / 1000;
-      this.drag.y = _MathUtils.default.lerp(this.drag.y, this.drag.target.y, 0.1);
+      this.drag.y = _MathUtils.default.lerp(this.drag.y, this.drag.target.y, this.interpolation);
       this.drag.y = Math.round(this.drag.y * 1000) / 1000;
     }
   }]);
@@ -60604,19 +60623,33 @@ function (_Object3D) {
 
     _this.initGrid();
 
-    _this.initPlanes();
-
-    _this.initGUI(); // init cursor
+    _this.initPlanes(); // init cursor
 
 
-    _this.cursor = new _Cursor.default();
-    var options = {
+    _this.cursor = new _Cursor.default(); // used for GUI
+
+    _this.drag = {};
+    _this.drag.force = {
+      range: [0.5, 3],
+      value: 1.5
+    };
+    _this.drag.interpolation = {
+      range: [0, 0.15],
+      value: 0.08
+    }; // Init drag cursor
+
+    var dragOptions = {
+      force: _this.drag.force.value,
+      interpolation: _this.drag.interpolation.value,
       elem: document.querySelector('.app'),
       direction: -1,
       height: _this.gridBounds.height,
       width: _this.gridBounds.width
     };
-    _this.dragCursor = new _DragCursor.default(options);
+    _this.dragCursor = new _DragCursor.default(dragOptions);
+
+    _this.initGUI();
+
     return _this;
   }
   /**
@@ -60677,9 +60710,21 @@ function (_Object3D) {
   }, {
     key: "initGUI",
     value: function initGUI() {
-      this.position.range = [-100, 100];
+      var _this2 = this;
 
-      _GUI.default.panel.addSlider(this.position, 'z', 'range');
+      _GUI.default.panel.addGroup({
+        'label': 'drag'
+      }).addSlider(this.drag.force, 'value', 'range', {
+        'label': 'force',
+        onChange: function onChange() {
+          _this2.dragCursor.setForce(_this2.drag.force.value);
+        }
+      }).addSlider(this.drag.interpolation, 'value', 'range', {
+        'label': 'interpolation',
+        onChange: function onChange() {
+          _this2.dragCursor.setInterpolation(_this2.drag.interpolation.value);
+        }
+      });
     }
     /**
      * 
@@ -60845,7 +60890,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57778" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51825" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -19,18 +19,34 @@ class Grid extends Object3D {
 
 		this.initPlanes()
 
-		this.initGUI()
-
 		// init cursor
 		this.cursor = new Cursor()
 
-		const options = {
+		// used for GUI
+		this.drag = {}
+
+		this.drag.force = {
+			range: [0.5, 3],
+			value: 1.5
+		}
+
+		this.drag.interpolation = {
+			range: [0, 0.15],
+			value: 0.08
+		}
+
+		// Init drag cursor
+		const dragOptions = {
+			force: this.drag.force.value,
+			interpolation: this.drag.interpolation.value,
 			elem: document.querySelector('.app'),
 			direction: -1,
 			height: this.gridBounds.height,
 			width: this.gridBounds.width,
 		}
-		this.dragCursor = new DragCursor(options)
+		this.dragCursor = new DragCursor(dragOptions)
+
+		this.initGUI()
 	}
 
 	/**
@@ -95,10 +111,14 @@ class Grid extends Object3D {
 
 	initGUI()
 	{
-		this.position.range = [-100, 100]
-
 		GUI.panel
-			.addSlider(this.position, 'z', 'range')
+			.addGroup({'label': 'drag'})
+			.addSlider(this.drag.force, 'value', 'range', {'label': 'force', onChange: () => {
+				this.dragCursor.setForce(this.drag.force.value)
+			}})
+			.addSlider(this.drag.interpolation, 'value', 'range', {'label': 'interpolation', onChange: () => {
+				this.dragCursor.setInterpolation(this.drag.interpolation.value)
+			}})
 	}
 
 	/**
