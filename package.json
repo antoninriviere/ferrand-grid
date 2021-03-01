@@ -21,6 +21,6 @@
     "postprocessing": "^6.8.8",
     "stats-js": "^1.0.1",
     "stylus": "^0.54.7",
-    "three": "^0.110.0"
+    "three": "^0.125.0"
   }
 }
